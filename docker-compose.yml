@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  redis-caching-api:
+    container_name: redis-caching-api
+    command: flask run -h 0.0.0.0 -p 5000
+    build: .
+    volumes:
+      - .:/usr/share/redis-caching-api
+      - cached-packages:/usr/local/lib/python3.10/site-packages/
+    ports:
+      - 5000:5000
+    environment:
+      - FLASK_ENV=development
+      - SWAPI_URL=https://swapi.dev/api
+      - APP_SETTINGS=app.settings.development
+  redis:
+    image: redis:6.0.8
+    container_name: caching-api-redis
+    command: redis-server
+volumes:
+  cached-packages:
