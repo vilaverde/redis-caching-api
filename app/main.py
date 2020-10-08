@@ -4,6 +4,7 @@ import os
 from flask import Flask, jsonify, request
 from .lib.swapi import get_formatted_film
 
+
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
 

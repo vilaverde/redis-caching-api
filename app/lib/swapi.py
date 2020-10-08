@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
-import requests
-from .utils import compose_url, extract_swapi_ids_from_list
+from .utils import compose_url, extract_swapi_ids_from_list, redis_data_fetcher
 
 
 def get_film(id):
@@ -14,8 +13,8 @@ def get_film(id):
     Returns
       SWAPI data dict
     '''
-    response = requests.get(compose_url('films', id))
-    return response.json()
+    url = compose_url('films', id)
+    return redis_data_fetcher(url)
 
 
 def get_person(id):
@@ -28,8 +27,8 @@ def get_person(id):
     Returns
       SWAPI data dict
     '''
-    response = requests.get(compose_url('people', id))
-    return response.json()
+    url = compose_url('people', id)
+    return redis_data_fetcher(url)
 
 
 def get_people(ids):

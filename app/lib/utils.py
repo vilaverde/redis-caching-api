@@ -2,6 +2,9 @@
 
 import re
 import os
+import requests
+import redis
+import ast
 
 
 def extract_swapi_id(url):
@@ -43,3 +46,13 @@ def compose_url(*args):
     '''
     swapi_url = os.environ['SWAPI_URL']
     return '/'.join(list((swapi_url,) + args))
+
+
+def redis_data_fetcher(url):
+    redis_client = redis.Redis.from_url(os.environ['REDIS_URL'])
+    data = redis_client.get(url)
+    if data:
+        return ast.literal_eval(data.decode('UTF-8'))
+
+    response = requests.get(url).json()
+    return redis_client.set(url, str(response)) and response

@@ -14,6 +14,7 @@ services:
       - FLASK_ENV=development
       - SWAPI_URL=https://swapi.dev/api
       - APP_SETTINGS=app.settings.development
+      - REDIS_URL=redis://redis:6379/0
   redis:
     image: redis:6.0.8
     container_name: caching-api-redis
