@@ -6,3 +6,6 @@
 
 # ignore pyc files
 *.pyc
+
+# pycache
+!**/__pycache__/
