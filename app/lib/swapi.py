@@ -11,7 +11,7 @@ def get_film(id):
         id (str): film resource SWAPI identificator
 
     Returns
-      SWAPI data dict
+        SWAPI data dict
     '''
     url = compose_url('films', id)
     return redis_data_fetcher(url)
@@ -25,7 +25,7 @@ def get_person(id):
         id (str): film resource SWAPI identificator
 
     Returns
-      SWAPI data dict
+        SWAPI data dict
     '''
     url = compose_url('people', id)
     return redis_data_fetcher(url)
@@ -39,22 +39,20 @@ def get_people(ids):
         id ([str]): list of film resource SWAPI identificator
 
     Returns
-      List of SWAPI data dict
+        List of SWAPI data dict
     '''
     return [get_person(id) for id in ids]
 
 
-def get_formatted_film(id, characters_name=True):
+def get_formatted_film(id):
     '''
     Gets film data from SWAPI
 
     Parameters:
         id (int): film resource SWAPI identificator
-        characters_name (boolean): include list of character names instead of
-                                   resource url
 
     Returns
-      Formatted SWAPI data dict
+        Formatted SWAPI data dict
     '''
 
     film = get_film(id)

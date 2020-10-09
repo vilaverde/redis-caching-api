@@ -16,7 +16,7 @@ def extract_swapi_id(url):
         url (str): target url
 
     Returns
-      first matched string group
+        first matched string group
     '''
     return re.search('(?<=\\/)\\d+(?=\\/$|$)', url).group(0)
 
@@ -29,7 +29,7 @@ def extract_swapi_ids_from_list(url_list):
         url ([str]): list of target urls
 
     Returns
-      first matched string group
+        first matched string group
     '''
     return [extract_swapi_id(url) for url in url_list]
 
@@ -43,13 +43,22 @@ def compose_url(*args):
         args (tuple of str): tuple of strings to be concatenated
 
     Returns
-      string object containing built url
+        string object containing built url
     '''
     swapi_url = os.environ['SWAPI_URL']
     return '/'.join(list((swapi_url,) + args))
 
 
 def redis_data_fetcher(url):
+    '''
+    Try to fetch Redis data or get data from URL and set to Redis
+
+    Parameters:
+        url (str): url to get data from
+
+    Returns
+        dict with remote data
+    '''
     redis_client = redis.Redis.from_url(os.environ['REDIS_URL'])
     data = redis_client.get(url)
     if data:
