@@ -60,7 +60,6 @@ def get_formatted_film(id, characters_name=True):
     film = get_film(id)
     people_ids = extract_swapi_ids_from_list(film['characters'])
     characters = [person['name'] for person in get_people(people_ids)]
-    print(characters)
 
     return {
         'title': film['title'],
