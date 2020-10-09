@@ -1,6 +1,9 @@
 from unittest.mock import patch
 from unittest import TestCase
-from app.lib.swapi import get_film, get_person, get_people, get_formatted_film
+from app.lib.swapi import get_film, get_person, get_people, \
+                          get_formatted_film, format_film_data, \
+                          get_all_formatted_films
+from app.lib.utils import extract_swapi_ids_from_list
 from ..support.helpers.mock_redis import MockRedis
 from ..support.helpers.mock_swapi import mock_requests_get
 
@@ -82,3 +85,37 @@ class SwapiTest(TestCase):
 
         for character in rjson['characters']:
             self.assertNotRegex(character, '^https?://')
+
+    @patch('requests.get', mock_requests_get)
+    @patch('redis.Redis.from_url', MockRedis.from_url)
+    def test_format_film_data(self):
+        id = '1'
+        film = get_film(id)
+        people_ids = extract_swapi_ids_from_list(film['characters'])
+        characters = [person['name'] for person in get_people(people_ids)]
+
+        result = format_film_data(id, film, characters)
+
+        self.assertEqual(type(result['title']), str)
+        self.assertEqual(type(result['opening_crawl']), str)
+        self.assertEqual(type(result['director']), str)
+        self.assertEqual(type(result['producer']), str)
+        self.assertEqual(type(result['release_date']), str)
+        self.assertEqual(type(result['characters']), list)
+
+        for character in result['characters']:
+            self.assertNotRegex(character, '^https?://')
+
+    @patch('requests.get', mock_requests_get)
+    @patch('redis.Redis.from_url', MockRedis.from_url)
+    def test_get_all_formatted_film(self):
+        for rjson in get_all_formatted_films():
+            self.assertEqual(type(rjson['title']), str)
+            self.assertEqual(type(rjson['opening_crawl']), str)
+            self.assertEqual(type(rjson['director']), str)
+            self.assertEqual(type(rjson['producer']), str)
+            self.assertEqual(type(rjson['release_date']), str)
+            self.assertEqual(type(rjson['characters']), list)
+
+            for character in rjson['characters']:
+                self.assertNotRegex(character, '^https?://')

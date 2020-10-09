@@ -2,7 +2,7 @@
 
 import os
 from flask import Flask, jsonify, request
-from .lib.swapi import get_formatted_film
+from .lib.swapi import get_formatted_film, get_all_formatted_films
 from .lib.errors import BadRequestError
 
 
@@ -14,7 +14,7 @@ app.config.from_object(os.environ['APP_SETTINGS'])
 def movies():
     movie_id = request.args.get('id')
     if not movie_id:
-        return jsonify({"message": "Must inform id parameter"}), 400
+        return jsonify(get_all_formatted_films()), 200
     try:
         return jsonify(get_formatted_film(movie_id)), 200
     except BadRequestError as err:

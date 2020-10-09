@@ -26,19 +26,32 @@ class MainTest(TestCase):
         self.assertEqual(type(rjson['release_date']), str)
         self.assertEqual(type(rjson['characters']), list)
 
-        for character in response.json['characters']:
+        for character in rjson['characters']:
             self.assertNotRegex(character, '^https?://')
 
     @patch('requests.get', mock_requests_get)
     @patch('redis.Redis.from_url', MockRedis.from_url)
-    def test_remote_bad_request(self):
-        response = self.app.get('/starwars/movies?id=999')
-
-        self.assertEqual(response.status_code, 400)
-        self.assertNotEqual(response.json['message'], None)
-
-    def test_bad_request(self):
+    def test_all_movies(self):
         response = self.app.get('/starwars/movies')
+
+        self.assertEqual(response.status_code, 200)
+
+        for rjson in response.json:
+            self.assertEqual(type(rjson['title']), str)
+            self.assertEqual(type(rjson['id']), str)
+            self.assertEqual(type(rjson['opening_crawl']), str)
+            self.assertEqual(type(rjson['director']), str)
+            self.assertEqual(type(rjson['producer']), str)
+            self.assertEqual(type(rjson['release_date']), str)
+            self.assertEqual(type(rjson['characters']), list)
+
+            for character in rjson['characters']:
+                self.assertNotRegex(character, '^https?://')
+
+    @patch('requests.get', mock_requests_get)
+    @patch('redis.Redis.from_url', MockRedis.from_url)
+    def test_bad_request(self):
+        response = self.app.get('/starwars/movies?id=999')
 
         self.assertEqual(response.status_code, 400)
         self.assertNotEqual(response.json['message'], None)

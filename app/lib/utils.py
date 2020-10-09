@@ -46,7 +46,8 @@ def compose_url(*args):
         string object containing built url
     '''
     swapi_url = os.environ['SWAPI_URL']
-    return '/'.join(list((swapi_url,) + args))
+    arg_list = list(filter(None, args))
+    return '/'.join([swapi_url] + arg_list)
 
 
 def redis_data_fetcher(url):
