@@ -13,5 +13,8 @@ class MockRedis():
         return self.data.get(key)
 
     def set(self, key, value):
-        self.data[key] = value
+        self.data[key] = str.encode(value)
         return True
+
+    def fake_from_url(self, _):
+        return self
