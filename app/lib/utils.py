@@ -5,6 +5,7 @@ import os
 import requests
 import redis
 import ast
+from .errors import BadRequestError
 
 
 def extract_swapi_id(url):
@@ -54,5 +55,11 @@ def redis_data_fetcher(url):
     if data:
         return ast.literal_eval(data.decode('UTF-8'))
 
-    response = requests.get(url).json()
-    return redis_client.set(url, str(response)) and response
+    response = requests.get(url)
+    if response.status_code != 200:
+        raise BadRequestError(
+            'Something went wrong trying to fetch data from ' + url
+        )
+
+    json_response = response.json()
+    return redis_client.set(url, str(json_response)) and json_response
